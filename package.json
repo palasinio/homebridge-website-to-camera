@@ -34,8 +34,8 @@
     "url": "https://github.com/werthdavid/homebridge-website-to-camera/issues"
   },
   "engines": {
-    "homebridge": ">=0.2.0",
-    "node": ">=4.2.0"
+    "homebridge": "^1.6.0 || ^2.0.0-beta.0",
+    "node": "^22 || ^24"
   },
   "homepage": "https://github.com/werthdavid/homebridge-website-to-camera#readme",
   "dependencies": {
