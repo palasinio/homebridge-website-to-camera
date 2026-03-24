@@ -19,51 +19,62 @@ function Camera(hap, conf, log) {
     this.cachedImage = undefined;
     this.lastSnapshotTime = undefined;
 
-    let options = {
+    const videoOptions = {
+        resolutions: [
+            [1920, 1080, 30],
+            [320, 240, 15],
+            [1280, 960, 30],
+            [1280, 720, 30],
+            [1024, 768, 30],
+            [640, 480, 30],
+            [640, 360, 30],
+            [480, 360, 30],
+            [480, 270, 30],
+            [320, 240, 30],
+            [320, 180, 30]
+        ],
+        codec: {
+            profiles: [0, 1, 2],
+            levels: [0, 1, 2]
+        }
+    };
+
+    const audioOptions = {
+        comfort_noise: false,
+        codecs: [
+            {
+                type: "OPUS",
+                samplerate: 24
+            },
+            {
+                type: "AAC-eld",
+                samplerate: 16
+            }
+        ]
+    };
+
+    this.controllerOptions = {
         cameraStreamCount: 2,
         delegate: this,
         streamingOptions: {
             supportedCryptoSuites: [
                 this.hap.SRTPCryptoSuites ? this.hap.SRTPCryptoSuites.AES_CM_128_HMAC_SHA1_80 : 0
             ],
-            video: {
-                resolutions: [
-                    [1920, 1080, 30],
-                    [320, 240, 15],
-                    [1280, 960, 30],
-                    [1280, 720, 30],
-                    [1024, 768, 30],
-                    [640, 480, 30],
-                    [640, 360, 30],
-                    [480, 360, 30],
-                    [480, 270, 30],
-                    [320, 240, 30],
-                    [320, 180, 30]
-                ],
-                codec: {
-                    profiles: [0, 1, 2],
-                    levels: [0, 1, 2]
-                }
-            },
-            audio: {
-                comfort_noise: false,
-                codecs: [
-                    {
-                        type: "OPUS",
-                        samplerate: 24
-                    },
-                    {
-                        type: "AAC-eld",
-                        samplerate: 16
-                    }
-                ]
-            }
+            video: videoOptions,
+            audio: audioOptions
         }
     };
 
-    this.controllerOptions = options;
+    this.legacyStreamOptions = {
+        proxy: false,
+        disable_audio_proxy: false,
+        srtp: true,
+        video: videoOptions,
+        audio: audioOptions
+    };
+
     this.createCameraControlService();
-    this._createStreamControllers(2, options);
+    this._createStreamControllers(2, this.legacyStreamOptions);
 }
 
 Camera.prototype.createController = function () {
