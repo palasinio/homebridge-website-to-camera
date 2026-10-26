@@ -195,7 +195,9 @@ Camera.prototype.prepareStream = function (request, callback) {
     response.address = addressResp;
     this.pendingSessions[this.normalizeSessionIdentifier(sessionID)] = sessionInfo;
 
-    if (callback.length >= 2) {
+    // HAP wraps modern callbacks in once(), which does not preserve their arity.
+    // Select the protocol by the configured controller, not callback.length.
+    if (this.controller) {
         callback(undefined, response);
     } else {
         callback(response);
